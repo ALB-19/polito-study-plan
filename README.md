@@ -1,5 +1,5 @@
-# Exam #12345: "Exam Title"
-## Student: s123456 LASTNAME FIRSTNAME 
+# Exam #1: "Piano degli studi"
+## Student: s302056 BELARDO ANNA LISA 
 
 ## React Client Application Routes
 
