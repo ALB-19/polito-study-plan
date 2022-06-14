@@ -39,7 +39,7 @@ const LoginForm = () => {
                     <Form>
                         <Input id="login-Email" name="username" type="email" placeholder="Inserisci il tuo indirizzo email" label="Email" />
                         <Input id="login-password" name="password" type="password" placeholder="Inserisci la tua password" label="Password" />
-                        <Button variant={disableSubmit ? `dark` : `primary`} type="submit" className='p-3 rounded-3 my-4 w-100 fw-semibold' disabled={disableSubmit}>
+                        <Button variant={`secondary`} type="submit" className='p-3 rounded-3 my-4 w-100 fw-semibold' disabled={disableSubmit}>
                             {loading && <Spinner animation='grow' size='sm' as='span' role='status' aria-hidden='true' className='me-4' />}
                             Accedi
                         </Button>

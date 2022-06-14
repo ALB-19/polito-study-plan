@@ -23,11 +23,12 @@ passport.use(
           const passwordHex = Buffer.from(res.user.Password, 'hex');
 
           if (!crypto.timingSafeEqual(passwordHex, hashedPassword))
-            return done({ message: 'Password sbagliata', status: 401 });
+            return done({ message: 'Email e/o Password sbagliata', status: 401 });
           return done(null, { id: res.user.ID, email: res.user.Email, name: res.user.Nome });
         })
       })
       .catch(err => {
+        if(err.status===404)return done({message: 'Email e/o Password sbagliata', status: 404})
         return done(err);
       })
   })

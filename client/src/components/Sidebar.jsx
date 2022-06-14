@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const Sidebar = () => {
    
     const filters = [
-        { label: 'All Courses', url: '/', icon: 'list' },
+        { label: 'Offerta formativa', url: '/', icon: 'list' },
         { label: 'Piano Di studio', url: '/studyPlan', icon: 'clipboard-list' },
     ];
     

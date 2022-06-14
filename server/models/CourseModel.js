@@ -6,7 +6,7 @@ module.exports = {
 
     getAll: () => {
         return new Promise((resolve, reject) => {
-            const query = "SELECT C.Code, C.Nome, C.CFU, C.Max_Studenti, C.Propedeuticità, C1.Nome as Prop_name, C1.Code as Prop_code FROM COURSE as C LEFT JOIN COURSE as C1 ON C.Propedeuticità=C1.Code ORDER BY C.Nome";
+            const query = "SELECT C.Code, C.Nome, C.CFU, C.Max_Studenti, C.Propedeuticità, C.Iscritti, C1.Nome as Prop_name, C1.Code as Prop_code FROM COURSE as C LEFT JOIN COURSE as C1 ON C.Propedeuticità=C1.Code ORDER BY C.Nome";
             db.all(query, [], (err, rows) => {
                 if (err) reject({ message: err.message, status: 500 });
                 else if (rows.length === 0) reject({ message: "Non sono stati trovati corsi", status: 404 });

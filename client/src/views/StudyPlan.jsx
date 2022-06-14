@@ -3,6 +3,8 @@ import { useContext, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import useNotification from '../hooks/useNotification';
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 import Course from "../components/Course";
 import api from "../services/api";
@@ -49,7 +51,7 @@ const StudyPlan = () => {
                 ...old,
                 plan: null,
             }))
-            notify.success('Piano di studio eliminato')
+            notify.error('Piano di studio eliminato')
         }
     }
 
@@ -65,23 +67,32 @@ const StudyPlan = () => {
                         </div>
                         <div>
                             <Link to="/studyPlan/edit">
-                                <Button variant="secondary" className="mx-2">Modifica</Button>
+                                <Button variant="secondary" className="mx-2">
+                                    <FontAwesomeIcon icon={faPencil} size='lg' className='me-3' />
+                                    Modifica
+                                </Button>
                             </Link>
-                            <Button variant="secondary" className="mx-2" onClick={handleDelete}>Elimina</Button>
+                            <Button variant="secondary" className="mx-2" onClick={handleDelete}>
+                                <FontAwesomeIcon icon={faTrashCan} size='lg' className='me-3' />
+                                Elimina
+                            </Button>
                         </div>
                     </div>
                     <Course course={session.plan.courses} />
                 </> :
                 <div className="d-flex flex-column align-items-center mt-5 ">
                     <h3>Crea il tuo piano di studio:</h3>
-                    <div className="d-flex flex-column" >
+                    <div className="d-flex" >
 
                         {
                             types.map((type, index) => {
                                 return (
-                                    <Button key={index} className="my-3" variant="secondary" size="lg" onClick={() => handleStudyPlan(type.ID)}>
-                                        {type.Nome}
-                                    </Button>
+                                    <div  key={index} className="px-5 text-center mt-5">
+                                        <h6 className="opacity-25">Scegliendo il piano di studio {type.Nome} dovrai aggiungere corsi fino a raggiungere un totale di CFU compreso tra {type.Min_Credits} e {type.Max_Credits} </h6>
+                                        <Button className="my-3" variant="secondary" size="lg" onClick={() => handleStudyPlan(type.ID)}>
+                                            {type.Nome}
+                                        </Button>
+                                    </div>
                                 );
                             })
                         }

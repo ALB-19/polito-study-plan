@@ -1,4 +1,3 @@
-import './App.css';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import AppContainer from './components/AppContainer';
 import { useState, useEffect } from 'react';
@@ -9,9 +8,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
-import { faClipboardList, faList } from '@fortawesome/free-solid-svg-icons'
+import { faClipboardList, faList, faPencil } from '@fortawesome/free-solid-svg-icons'
 
-library.add(fab, faList, faClipboardList)
+library.add(fab, faList, faClipboardList, faPencil)
 
 const App = () => {
   const location = useLocation();
