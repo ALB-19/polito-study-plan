@@ -6,30 +6,35 @@ import useNotification from '../hooks/useNotification';
 const AuthContext = createContext([{}, () => { }]);
 
 const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState({ user: null, plan: null, loggedIn: false });
+    const [dirty, setDirty] = useState(true); // lo usiamo per ricaricare le info dell'utente 
     const notify = useNotification();
 
     useEffect(() => {
-        api.getUserInfo()
-            .then((user) => {
-                setUser({ user: { ...user }, plan: null, loggedIn: true });
-                api.getStudyPlan()
-                    .then((plan) => {
-                        setUser({ user: { ...user }, plan: { ...plan }, loggedIn: true })
-                    })
-                    .catch((error) => {
-                        if (error.status === 404) setUser({ user: { ...user }, plan: null, loggedIn: true })
-                        else notify.error(error.data)
-                    })
-            })
-            .catch(() => {
-                setUser({ user: undefined, loggedIn: false });
-            })
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+        if (dirty)
+            api.getUserInfo()
+                .then((user) => {
+                    setUser((old) => ({ ...old, user: { ...user }, loggedIn: true }));
+                    api.getStudyPlan()
+                        .then((plan) => {
+                            setUser((old) => ({ ...old, plan: { ...plan } }))
+                            setDirty(false);
+                        })
+                        .catch((error) => {
+                            if (error.status === 404)  setUser((old) => ({ ...old, plan: null }))
+                            else notify.error(error.data)
+                            setDirty(false);
+                        })
+                })
+                .catch(() => {
+                    setUser({ user: null, plan: null, loggedIn: false });
+                    setDirty(false);
+                })
+    }, [dirty]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    if (user) {
+    if (!dirty) {
         return (
-            <AuthContext.Provider value={[user, setUser]}>
+            <AuthContext.Provider value={[user, setUser, setDirty]}>
                 {children}
             </AuthContext.Provider>
         );

@@ -58,7 +58,7 @@ module.exports = {
                         ID: rows[0].ID,
                         ID_List: rows[0].ID_List,
                         Crediti: rows[0].Crediti,
-                        Tipo: {
+                        type: {
                             Nome: rows[0].Nome,
                             Max_Credits: rows[0].Max_Credits,
                             Min_Credits: rows[0].Min_Credits
@@ -79,5 +79,75 @@ module.exports = {
                 else resolve({ type: rows, status: 200 });
             })
         })
-    }
+    },
+
+
+
+    addCourses: (courses) => {
+        return new Promise((resolve, reject) => {
+            const queryLastID = "SELECT max(ID) as lastID FROM LIST_COURSES"
+            db.get(queryLastID, [], (err, row) => {
+                if (err) reject({ message: err.message, status: 500 });
+                else if (row.length === 0) reject({ message: "No rows found for IDs", status: 404 });
+                else {
+                    const query = "INSERT INTO LIST_COURSES (ID, Code) VALUES (?,?)"
+                    const stmt = db.prepare(query);
+                    courses.forEach(course => {
+                        stmt.run([row.lastID + 1, course], function (err) {
+                            if (err) reject({ message: err.message, status: 500 });
+                        })
+                    });
+                    resolve(row.lastID + 1)
+                }
+            })
+        })
+    },
+
+
+    addStudyPlan: (id_list, id_type, id_user, crediti) => {
+        return new Promise((resolve, reject) => {
+            const query = "INSERT INTO STUDY_PLAN (ID_List, ID_Type, ID_User, Crediti) VALUES (?,?,?,?)"
+            db.run(query, [id_list, id_type, id_user, crediti], function (err) {
+                if (err) reject({ message: err.message, status: 500 });
+                else resolve({ status: 200 });
+
+            })
+        })
+    },
+
+    getListId: (id_studyplan) =>{
+        return new Promise((resolve, reject) => {
+            const query="SELECT ID_List FROM STUDY_PLAN WHERE ID = ?"
+            db.get(query, [id_studyplan], (err,row) => {
+                if (err) reject({ message: err.message, status: 500 });
+                else if (!row) reject({ message: "Non sono state trovate liste associate.", status: 404 });
+                else resolve (row.ID_List);
+            })
+        })
+    },
+
+    deleteCourses: (id_list) => {
+        return new Promise((resolve, reject) => {
+            const query = "DELETE FROM LIST_COURSES WHERE ID = ?";
+            db.run(query, [id_list], function (err) {
+                if (err) reject({ message: err.message, status: 500 });
+                else resolve({ status: 200 });
+            });
+        });
+    },
+
+    deleteStudyPlan: (id_user) => {
+        return new Promise((resolve, reject) => {
+            const query = "DELETE FROM STUDY_PLAN WHERE ID_User = ?";
+            db.run(query, [id_user], function (err) {
+                if (err) reject({ message: err.message, status: 500 });
+                else resolve({ status: 200 });
+            });
+        });
+    },
+
+
+
+
+
 }

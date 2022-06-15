@@ -21,7 +21,6 @@ const api = {
     },
 
 
-
     login: (credentials) => {
         return new Promise((resolve, reject) => {
             axios.post('/api/sessions', credentials, { withCredentials: true })
@@ -52,7 +51,26 @@ const api = {
                 .then((res) => resolve(res.data))
                 .catch((err) => reject(err.response.data));
         })
+    },
+
+    createStudyPlan: (courses,ID_Type, Crediti)=>{
+        return new Promise((resolve, reject) => {
+            axios.post('/api/courses/studyplan', {courses, ID_Type, Crediti})
+                .then((res) => resolve(res.data))
+                .catch((err) => reject(err.response.data));
+        })
+    },
+
+    deleteStudyPlan: (id_studyplan) => {
+        return new Promise((resolve, reject) => {
+            axios.delete(`/api/courses/studyplan/${id_studyplan}`)
+                .then(() => resolve())
+                .catch(err => reject(err.response.data));
+        })
     }
+
+
+
 
 }
 export default api;

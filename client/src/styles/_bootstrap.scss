@@ -88,7 +88,7 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 // @import "~bootstrap/scss/close";
 // @import "~bootstrap/scss/dropdown";
 // @import "~bootstrap/scss/list-group";
-// @import "~bootstrap/scss/modal"; // Requires transitions
+@import "~bootstrap/scss/modal"; // Requires transitions
 @import "~bootstrap/scss/nav";
 @import "~bootstrap/scss/navbar"; // Requires nav
 // @import "~bootstrap/scss/offcanvas";

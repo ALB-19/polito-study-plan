@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 
 const LoginForm = () => {
     const [loading, setLoading] = useState(false);
-    const [, setSession] = useContext(AuthContext);
+    const [, , setDirty] = useContext(AuthContext);
     const notify = useNotification();
     const navigate = useNavigate();
 
@@ -23,7 +23,8 @@ const LoginForm = () => {
         setLoading(true);
         api.login(credentials)
             .then(user => {
-                setSession({ user: { ...user }, loggedIn: true });
+                setDirty(true);
+                // setSession({ user: { ...user }, loggedIn: true });
                 notify.success(`Benvenuto ${user.name}!`)
                 navigate('/', { replace: true });
             })

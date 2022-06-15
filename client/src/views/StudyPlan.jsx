@@ -1,17 +1,24 @@
 import { AuthContext } from "../contexts/AuthContext"
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import useNotification from '../hooks/useNotification';
 import { Link } from "react-router-dom";
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 import Course from "../components/Course";
-import api from "../services/api";
-import { useState } from "react";
+import ConfirmationModal from '../components/ConfirmationModal';
 
-const StudyPlan = () => {
-    const [session, setSession] = useContext(AuthContext);
+
+import api from "../services/api";
+
+
+
+import useModal from '../hooks/useModal';
+
+const StudyPlan = (props) => {
+    const [session, setSession, setDirty] = useContext(AuthContext);
     const [types, setTypes] = useState([]);
     const notify = useNotification();
 
@@ -26,7 +33,6 @@ const StudyPlan = () => {
 
     const handleStudyPlan = (typeId) => {
         const type = types.find(type => type.ID === typeId);
-        console.log(type)
         setSession((old) => ({
             ...old,
             plan: {
@@ -42,21 +48,32 @@ const StudyPlan = () => {
         }))
     }
 
-    const handleDelete = () => {
+    const [modal, setModal] = useModal(() => {
         if (session.plan.ID) {
-
+            api.deleteStudyPlan(session.plan.ID)
+            .then(()=>{
+                setDirty(true);
+            })
+            .catch((error)=>{
+                notify.error(error.message)
+            })
         }
         else {
             setSession((old) => ({
                 ...old,
                 plan: null,
             }))
-            notify.error('Piano di studio eliminato')
+
         }
-    }
+        notify.error('Piano di studio eliminato')
+
+    });
+
+
 
     return (
         <div className="px-3">
+            <ConfirmationModal show={modal} onHide={setModal.onHide} onConfirm={setModal.onConfirm} />
             {session.plan ?
                 <>
                     <div className="d-flex justify-content-between mt-4">
@@ -72,13 +89,13 @@ const StudyPlan = () => {
                                     Modifica
                                 </Button>
                             </Link>
-                            <Button variant="secondary" className="mx-2" onClick={handleDelete}>
+                            <Button variant="secondary" className="mx-2" onClick={setModal.onShow}>
                                 <FontAwesomeIcon icon={faTrashCan} size='lg' className='me-3' />
                                 Elimina
                             </Button>
                         </div>
                     </div>
-                    <Course course={session.plan.courses} />
+                    <Course course={props.course.filter(c => session.plan.courses.includes(c.Code))} />
                 </> :
                 <div className="d-flex flex-column align-items-center mt-5 ">
                     <h3>Crea il tuo piano di studio:</h3>
@@ -87,7 +104,7 @@ const StudyPlan = () => {
                         {
                             types.map((type, index) => {
                                 return (
-                                    <div  key={index} className="px-5 text-center mt-5">
+                                    <div key={index} className="px-5 text-center mt-5">
                                         <h6 className="opacity-25">Scegliendo il piano di studio {type.Nome} dovrai aggiungere corsi fino a raggiungere un totale di CFU compreso tra {type.Min_Credits} e {type.Max_Credits} </h6>
                                         <Button className="my-3" variant="secondary" size="lg" onClick={() => handleStudyPlan(type.ID)}>
                                             {type.Nome}

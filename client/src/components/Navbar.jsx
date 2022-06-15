@@ -11,7 +11,7 @@ import api from "../services/api";
 
 
 const Navbar = ({ setCourse }) => {
-    const [session, setSession] = useContext(AuthContext);
+    const [session, , setDirty] = useContext(AuthContext);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -20,7 +20,8 @@ const Navbar = ({ setCourse }) => {
     const handleLogout = () => {
         api.logout()
             .then(() => {
-                setSession({ user: undefined, loggedIn: false });
+                setDirty(true)
+                // setSession({ user: undefined, loggedIn: false });
                 setCourse([]);
                 navigate('/', { replace: true });
             })

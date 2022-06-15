@@ -24,7 +24,7 @@ const App = () => {
 
       .catch(err => {
         if (err.status === 404) setCourse([]);
-        else console.log(err.message)
+        else console.log(err.message) //SCRIVERE NOTIFY 
 
       })
   }, []);
@@ -41,9 +41,8 @@ const App = () => {
         <Route path='/' element={<View.Home course={course} />} />
         <Route path='/login' element={<View.LogIn />} />
         <Route element={<ProtectedRoute />}>
-          <Route path='/studyPlan' element={<View.StudyPlan />} />
+          <Route path='/studyPlan' element={<View.StudyPlan course={course} />} />
           <Route path='/studyPlan/edit' element={<View.EditPlan course={course} />} />
-
         </Route>
         <Route path='*' element={<View.ErrorView error={pageNotFoundError} />} />
       </Routes>
