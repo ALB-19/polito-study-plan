@@ -1,7 +1,9 @@
 import { createContext, useEffect, useState } from 'react'
-import api from '../services/api';
 import { Spinner } from 'react-bootstrap';
+
 import useNotification from '../hooks/useNotification';
+
+import api from '../services/api';
 
 const AuthContext = createContext([{}, () => { }]);
 

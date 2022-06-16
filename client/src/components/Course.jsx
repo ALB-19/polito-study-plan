@@ -1,7 +1,8 @@
-import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { Button, Row } from "react-bootstrap";
 import { Accordion } from "react-bootstrap";
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 const Course = (props) => {
 

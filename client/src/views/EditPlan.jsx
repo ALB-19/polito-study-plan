@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { AuthContext } from "../contexts/AuthContext"
-import { useContext } from "react";
 import { Button } from "react-bootstrap";
+import { AuthContext } from "../contexts/AuthContext"
 
 import Course from "../components/Course";
 import useNotification from "../hooks/useNotification";
+import useModal from '../hooks/useModal';
+import ConfirmationModal from '../components/ConfirmationModal';
+
 import api from "../services/api";
 
 const EditPlan = (props) => {
@@ -41,7 +43,7 @@ const EditPlan = (props) => {
         setCredits(session.plan.Crediti);
     }
 
-    const handleSave = () => {
+    const [modal, setModal] = useModal(() => {
         if (credits > session.plan.type.Max_Credits) {
             notify.error(`Limite non rispettato. Un piano di studio ${session.plan.type.Nome} deve avere al massimo ${session.plan.type.Min_Credits} crediti.`)
         }
@@ -74,15 +76,16 @@ const EditPlan = (props) => {
                 })
         }
 
-    }
+    })
 
     if (session.plan)
         return (
             <div>
+                <ConfirmationModal show={modal} onHide={setModal.onHide} onConfirm={setModal.onConfirm} title="Sei sicuro di salvare il tuo piano studio? " />
                 <div className="d-flex justify-content-between mt-2">
                     <h4>Crediti attuali: {credits}</h4>
                     <div>
-                        <Button variant="secondary" className="mx-2" onClick={handleSave}>
+                        <Button variant="secondary" className="mx-2" onClick={setModal.onShow}>
                             Salva
                         </Button>
                         <Button variant="secondary" className="mx-2" onClick={handleReset} >

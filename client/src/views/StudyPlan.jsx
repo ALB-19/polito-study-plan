@@ -1,21 +1,19 @@
-import { AuthContext } from "../contexts/AuthContext"
 import { useContext, useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import useNotification from '../hooks/useNotification';
 import { Link } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
+import useNotification from '../hooks/useNotification';
 import Course from "../components/Course";
 import ConfirmationModal from '../components/ConfirmationModal';
+import useModal from '../hooks/useModal';
 
 
 import api from "../services/api";
 
-
-
-import useModal from '../hooks/useModal';
 
 const StudyPlan = (props) => {
     const [session, setSession, setDirty] = useContext(AuthContext);
@@ -73,12 +71,12 @@ const StudyPlan = (props) => {
 
     return (
         <div className="px-3">
-            <ConfirmationModal show={modal} onHide={setModal.onHide} onConfirm={setModal.onConfirm} />
+            <ConfirmationModal show={modal} onHide={setModal.onHide} onConfirm={setModal.onConfirm} title="Sei sicuro di voler eliminare il tuo piano di studio?" />
             {session.plan ?
                 <>
                     <div className="d-flex justify-content-between mt-4">
                         <div>
-                            <h4>Il mio piano di studio, chi sei?</h4>
+                            <h4>Il mio piano di studio</h4>
                             <h6>Tipologia: {session.plan.type.Nome}</h6>
                             <h6>Crediti: {session.plan.Crediti}</h6>
                         </div>

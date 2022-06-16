@@ -1,10 +1,10 @@
 import { Modal, Button } from "react-bootstrap";
 
-const ConfirmationModal = ({ show, onHide, onConfirm }) => {
+const ConfirmationModal = ({ show, onHide, onConfirm, title }) => {
     return (
         <Modal show={show} onHide={onHide} centered size={"lg"}>
             <Modal.Header className="border-0 justify-content-center mt-3">
-                <Modal.Title className="fw-bold text-danger text-center">Sei sicuro di voler eliminare il tuo piano di studio?</Modal.Title>
+                <Modal.Title className="fw-bold text-danger text-center">{title}</Modal.Title>
             </Modal.Header>
             <Modal.Body className="small text-dark text-center">
                 <span className="text-secondary">Conferma la tua scelta.</span>

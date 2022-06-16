@@ -2,8 +2,9 @@ import { useContext, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-import LoginForm from "../components/LoginForm";
 import { AuthContext } from "../contexts/AuthContext";
+
+import LoginForm from "../components/LoginForm";
 
 const LogIn = () => {
     const [session] = useContext(AuthContext);

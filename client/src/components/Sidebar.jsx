@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Col, Nav } from 'react-bootstrap';
+import { Nav } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Sidebar = () => {
