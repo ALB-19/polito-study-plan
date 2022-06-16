@@ -47,7 +47,7 @@ module.exports = {
         });
     },
 
-    getStudyPlan: (id) => {
+/*     getStudyPlan: (id) => {
         return new Promise((resolve, reject) => {
             const query = "SELECT SP.ID, SP.ID_List, T.Nome, T.Max_Credits, T.Min_Credits, SP.Crediti, LC.Code  FROM STUDY_PLAN SP , LIST_COURSES LC, TYPE_STUDY_PLAN T WHERE SP.ID_User= ? AND SP.ID_List = LC.ID AND SP.ID_Type = T.ID"
             db.all(query, [id], (err, rows) => {
@@ -68,9 +68,9 @@ module.exports = {
                 });
             })
         })
-    },
+    }, */
 
-    getType: () => {
+/*     getType: () => {
         return new Promise((resolve, reject) => {
             const query = "SELECT * FROM TYPE_STUDY_PLAN"
             db.all(query, [], (err, rows) => {
@@ -79,11 +79,11 @@ module.exports = {
                 else resolve({ type: rows, status: 200 });
             })
         })
-    },
+    }, */
 
 
 
-    addCourses: (courses) => {
+/*     addCourses: (courses) => {
         return new Promise((resolve, reject) => {
             const queryLastID = "SELECT max(ID) as lastID FROM LIST_COURSES"
             db.get(queryLastID, [], (err, row) => {
@@ -101,10 +101,10 @@ module.exports = {
                 }
             })
         })
-    },
+    }, */
 
 
-    addStudyPlan: (id_list, id_type, id_user, crediti) => {
+/*     addStudyPlan: (id_list, id_type, id_user, crediti) => {
         return new Promise((resolve, reject) => {
             const query = "INSERT INTO STUDY_PLAN (ID_List, ID_Type, ID_User, Crediti) VALUES (?,?,?,?)"
             db.run(query, [id_list, id_type, id_user, crediti], function (err) {
@@ -113,9 +113,9 @@ module.exports = {
 
             })
         })
-    },
+    }, */
 
-    getListId: (id_studyplan) =>{
+/*     getListId: (id_studyplan) =>{
         return new Promise((resolve, reject) => {
             const query="SELECT ID_List FROM STUDY_PLAN WHERE ID = ?"
             db.get(query, [id_studyplan], (err,row) => {
@@ -124,9 +124,9 @@ module.exports = {
                 else resolve (row.ID_List);
             })
         })
-    },
+    }, */
 
-    deleteCourses: (id_list) => {
+/*     deleteCourses: (id_list) => {
         return new Promise((resolve, reject) => {
             const query = "DELETE FROM LIST_COURSES WHERE ID = ?";
             db.run(query, [id_list], function (err) {
@@ -134,9 +134,9 @@ module.exports = {
                 else resolve({ status: 200 });
             });
         });
-    },
+    }, */
 
-    deleteStudyPlan: (id_user) => {
+/*     deleteStudyPlan: (id_user) => {
         return new Promise((resolve, reject) => {
             const query = "DELETE FROM STUDY_PLAN WHERE ID_User = ?";
             db.run(query, [id_user], function (err) {
@@ -145,7 +145,7 @@ module.exports = {
             });
         });
     },
-
+ */
 
 
 

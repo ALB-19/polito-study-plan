@@ -3,10 +3,6 @@ const express = require("express");
 const router = express.Router();
 const CourseModel = require('../models/CourseModel');
 
-const { check, validationResult } = require('express-validator');
-
-const withAuth = require('../middlewares/withAuth');
-const { addCourses } = require("../models/CourseModel");
 
 //GET /courses/all
 router.get("/all", (req, res) => {
@@ -19,7 +15,7 @@ router.get("/all", (req, res) => {
 });
 
 
-//GET /courses/studyplan
+/* //GET /courses/studyplan
 
 router.get("/studyplan" ,withAuth, (req, res) => {
     CourseModel.getStudyPlan(req.user.id)
@@ -30,9 +26,9 @@ router.get("/studyplan" ,withAuth, (req, res) => {
             res.status(error.status).json(error.message);
         })
 });
+ */
 
-
-//GET /courses/type
+/* //GET /courses/type
 router.get("/type",withAuth, (req, res) => {
     CourseModel.getType()
         .then((data) => {
@@ -40,10 +36,10 @@ router.get("/type",withAuth, (req, res) => {
         }).catch((error) => {
             res.status(error.status).json(error.message);
         })
-});
+}); */
 
 
-//POST /study-plan 
+/* //POST /study-plan 
 router.post("/studyplan", [
     check('courses').isArray({min:2}).not().optional(),
     check('ID_Type').isInt({min:1, max:2}),
@@ -65,10 +61,10 @@ router.post("/studyplan", [
         res.status(error.status).json(error.message);
     })
 
-});
+}); */
 
 
-//DELETE /studyplan
+/* //DELETE /studyplan
 
 router.delete("/studyplan/:id", withAuth, (req, res) => {
 
@@ -91,7 +87,7 @@ router.delete("/studyplan/:id", withAuth, (req, res) => {
 
    
 
-});
+}); */
 
 
 

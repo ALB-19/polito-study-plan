@@ -9,6 +9,8 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
 const CourseRouter = require("./routes/CourseRouter");
+const StudyPlanRouter = require("./routes/StudyPlanRouter");
+const ListCoursesRouter = require("./routes/ListCoursesRouter");
 const sessionsRouter = require("./routes/sessions");
 
 const usersModel = require("./models/UserModel");
@@ -73,6 +75,8 @@ app.use(express.json());
 
 /* APIs */
 app.use("/api/courses", CourseRouter);
+app.use("/api/study-plan", StudyPlanRouter);
+app.use("/api/list-courses", ListCoursesRouter);
 app.use("/api/sessions", sessionsRouter);
 
 

@@ -8,7 +8,7 @@ const Course = (props) => {
     if (props.course.length === 0 && !props.removeList)
         return (
             <Row className="flex-fill ">
-                <h4 className="mt-3 mb-3  " > Nessun corso qua...</h4>
+                <h4 className="mt-3 mb-3  " > Ancora nessun corso presente nel piano di studio</h4>
             </Row>
         );
     else
@@ -21,7 +21,7 @@ const Course = (props) => {
                 <Accordion alwaysOpen  >
                     {props.course.map((course, index) => {
                         return (
-                            <Accordion.Item eventKey={index} key={index} >
+                            <Accordion.Item eventKey={index} key={index} className={course.disable ? "opacity-25" : null} >
 
                                 <Accordion.Header className="w-100">
                                     <div >

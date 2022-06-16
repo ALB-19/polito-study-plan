@@ -9,6 +9,7 @@ const AuthProvider = ({ children }) => {
     const [user, setUser] = useState({ user: null, plan: null, loggedIn: false });
     const [dirty, setDirty] = useState(true); // lo usiamo per ricaricare le info dell'utente 
     const notify = useNotification();
+    
 
     useEffect(() => {
         if (dirty)
