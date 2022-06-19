@@ -1,9 +1,10 @@
 import axios from "axios";
+const SERVER_URL = 'http://localhost:3001/api/';
 
 const api = {
     getAllCourse: () => {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/courses/all`)
+            axios.get(SERVER_URL + `courses/all`)
                 .then(res => resolve(res.data))
                 .catch(err => reject({ data: err.response.data, status: err.status }));
 
@@ -13,7 +14,7 @@ const api = {
     
     getStudyPlan:() => {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/study-plan`)
+            axios.get(SERVER_URL + `study-plan`)
                 .then(res => resolve(res.data))
                 .catch(err => reject({ data: err.response.data, status: err.response.status }));
 
@@ -23,7 +24,7 @@ const api = {
 
     login: (credentials) => {
         return new Promise((resolve, reject) => {
-            axios.post('/api/sessions', credentials, { withCredentials: true })
+            axios.post(SERVER_URL + 'sessions', credentials, { withCredentials: true })
                 .then(res => resolve(res.data))
                 .catch(err => reject(err.response.data));
         })
@@ -31,7 +32,7 @@ const api = {
 
     logout: () => {
         return new Promise((resolve, reject) => {
-            axios.delete('/api/sessions/current',)
+            axios.delete(SERVER_URL + 'sessions/current',)
                 .then(() => resolve())
                 .catch((err) => reject(err.response.data));
         })
@@ -39,7 +40,7 @@ const api = {
 
     getUserInfo: () => {
         return new Promise((resolve, reject) => {
-            axios.get('/api/sessions/current')
+            axios.get(SERVER_URL + 'sessions/current')
                 .then((res) => resolve(res.data))
                 .catch((err) => reject(err.response.data));
         })
@@ -47,7 +48,7 @@ const api = {
 
     getType: ()=>{
         return new Promise((resolve, reject) => {
-            axios.get('/api/study-plan/type')
+            axios.get(SERVER_URL + 'study-plan/type')
                 .then((res) => resolve(res.data))
                 .catch((err) => reject(err.response.data));
         })
@@ -55,7 +56,7 @@ const api = {
 
     createStudyPlan: (courses,ID_Type, Crediti)=>{
         return new Promise((resolve, reject) => {
-            axios.post('/api/study-plan/add', {courses, ID_Type, Crediti})
+            axios.post(SERVER_URL + 'study-plan/add', {courses, ID_Type, Crediti})
                 .then((res) => resolve(res.data))
                 .catch((err) => reject(err.response.data));
         })
@@ -63,15 +64,16 @@ const api = {
 
     updateStudyPlan: (ID, Crediti, oldCourses, newCourses) =>{
         return new Promise((resolve, reject) => {
-            axios.put(`/api/study-plan/${ID}`, {oldCourses, newCourses, Crediti })
+            axios.put(SERVER_URL + `study-plan/${ID}`, {oldCourses, newCourses, Crediti })
             .then((res) => resolve(res.data))
             .catch((err) => reject(err.response.data));
         })
     },
 
+
     deleteStudyPlan: (id_studyplan) => {
         return new Promise((resolve, reject) => {
-            axios.delete(`/api/study-plan/${id_studyplan}`)
+            axios.delete(SERVER_URL + `study-plan/${id_studyplan}`)
                 .then(() => resolve())
                 .catch(err => reject(err.response.data));
         })

@@ -1,10 +1,13 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
-import AppContainer from './components/AppContainer';
 import { useState, useEffect } from 'react';
 
-import * as View from './views';
-import api from './services/api';
+
 import ProtectedRoute from './components/ProtectedRoute';
+import AppContainer from './components/AppContainer';
+
+import * as View from './views';
+
+import api from './services/api';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'

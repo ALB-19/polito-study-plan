@@ -40,12 +40,12 @@ const Course = (props) => {
                                 </Accordion.Header>
 
                                 <Accordion.Body>
-                                    <h6>{course.Propedeuticità.Code ? `Propedeuticità: ${course.Propedeuticità.Code} ${course.Propedeuticità.Name} ` : 'Non ci sono Propedeuticità'} </h6>
+                                    <h6>{course.Propedeuticità.Code ? `Propedeuticità: ${course.Propedeuticità.Code} - ${course.Propedeuticità.Name} ` : 'Non ci sono Propedeuticità'} </h6>
                                     {
                                         course.incompatibilita ?
                                             course.incompatibilita.map((incomp, index) => {
                                                 return (
-                                                    <h6 key={index}>Incompatibilità: {incomp.Code} {incomp.Name}</h6>
+                                                    <h6 key={index}>Incompatibilità: {incomp.Code} - {incomp.Name}</h6>
                                                 )
                                             }) : <h6>Nessun corso incompatibile</h6>
                                     }

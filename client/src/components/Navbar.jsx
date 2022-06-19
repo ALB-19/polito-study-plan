@@ -45,7 +45,7 @@ const Navbar = ({ setCourse }) => {
                     <div className="d-flex align-items-center">
                         {session.loggedIn && <h6 className='text-dark fw-light mb-0'>
                             <FontAwesomeIcon icon={faUser} size='lg' className='me-3 ' />
-                            Hi,{session.user ? session.user.name : "user"}
+                            Ciao,{session.user ? session.user.name : "user"}
                         </h6>}
                         {session.loggedIn ? <Button variant='secondary' size='sm' className='ms-4 px-3 text-white fw-semibold' onClick={handleLogout}>
                             Logout

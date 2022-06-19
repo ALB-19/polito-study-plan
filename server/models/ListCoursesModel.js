@@ -60,7 +60,16 @@ module.exports = {
         })
     },
 
-
+    getCourseIDList: (id_list) =>{
+        return new Promise((resolve, reject) => {
+            const query = "SELECT Code FROM LIST_COURSES WHERE ID = ?"
+            db.all(query, [id_list], (err, rows) => {
+                if (err) reject({ message: err.message, status: 500 });
+                else if (rows.lenght === 0) reject({ message: "Non sono state trovati corsi associati a ID_LIST.", status: 404 });
+                else resolve(rows.map(row => row.Code));
+            })
+        })
+    },  
 
 
     deleteCourses: (id_list) => {

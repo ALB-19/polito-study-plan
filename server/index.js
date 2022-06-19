@@ -10,7 +10,6 @@ const LocalStrategy = require("passport-local");
 
 const CourseRouter = require("./routes/CourseRouter");
 const StudyPlanRouter = require("./routes/StudyPlanRouter");
-const ListCoursesRouter = require("./routes/ListCoursesRouter");
 const sessionsRouter = require("./routes/sessions");
 
 const usersModel = require("./models/UserModel");
@@ -30,7 +29,7 @@ passport.use(
         })
       })
       .catch(err => {
-        if(err.status===404)return done({message: 'Email e/o Password sbagliata', status: 404})
+        if(err.status===404)return done({message: 'Email e/o Password sbagliata', status: 401})
         return done(err);
       })
   })
@@ -76,7 +75,6 @@ app.use(express.json());
 /* APIs */
 app.use("/api/courses", CourseRouter);
 app.use("/api/study-plan", StudyPlanRouter);
-app.use("/api/list-courses", ListCoursesRouter);
 app.use("/api/sessions", sessionsRouter);
 
 

@@ -6,7 +6,7 @@ const ListCoursesModel = require('../models/ListCoursesModel')
 const { check, validationResult } = require('express-validator');
 
 const withAuth = require('../middlewares/withAuth');
-const { response } = require("express");
+const CourseModel = require("../models/CourseModel");
 
 //GET /study-plan
 
@@ -43,8 +43,14 @@ router.post("/add", [
     ListCoursesModel.addCourses(req.body.courses)
         .then((ID_List) => {
             StudyPlanModel.addStudyPlan(ID_List, req.body.ID_Type, req.user.id, req.body.Crediti)
-                .then((data) => {
-                    res.status(data.status).end();
+                .then(() => {
+                    CourseModel.updateIscritti(req.body.courses, [])
+                        .then((data) => {
+                            res.status(data.status).end();
+                        })
+                        .catch((error) => {
+                            res.status(error.status).json(error.message);
+                        })
                 })
                 .catch((error) => {
                     res.status(error.status).json(error.message);
@@ -58,49 +64,77 @@ router.post("/add", [
 
 //PUT /stuy-plan/:id
 
-router.put("/:id", withAuth, (req, res) => {
-    ListCoursesModel.getListId(req.params.id)
-        .then((id_list) => {
-            ListCoursesModel.updateCourses(id_list, req.body.oldCourses, req.body.newCourses)
-                .then(() => {
-                    StudyPlanModel.updateStudyPlan(req.params.id, req.user.id, req.body.Crediti)
-                        .then((data) => res.status(data.status).end())
-                        .catch((error) => {
-                            res.status(error.status).json(error.message);
-                        })
-                })
-                .catch(error => res.status(error.status).json(error.message));
-        })
-        .catch(error => {
-            res.status(error.status).json(error.message);
-        })
+router.put("/:id", [
+    check('id').isInt(),
+    check('oldCourses').isArray().not().optional,
+    check('newCourses').isArray().not().optional
+]
+    , withAuth, (req, res) => {
+        ListCoursesModel.getListId(req.params.id)
+            .then((id_list) => {
+                ListCoursesModel.updateCourses(id_list, req.body.oldCourses, req.body.newCourses)
+                    .then(() => {
+                        StudyPlanModel.updateStudyPlan(req.params.id, req.user.id, req.body.Crediti)
+                            .then(() => {
+                                CourseModel.updateIscritti(req.body.newCourses, req.body.oldCourses)
+                                    .then((data) => {
+                                        res.status(data.status).end();
+                                    })
+                                    .catch((error) => {
+                                        res.status(error.status).json(error.message);
+                                    })
+                            })
+                            .catch((error) => {
+                                res.status(error.status).json(error.message);
+                            })
+                    })
+                    .catch(error => res.status(error.status).json(error.message));
+            })
+            .catch(error => {
+                res.status(error.status).json(error.message);
+            })
 
-})
+    })
 
 
 
 
 //DELETE /study-plan/:id
 
-router.delete("/:id", withAuth, (req, res) => {
-
+router.delete("/:id", [
+    check('id').isInt()
+], withAuth, (req, res) => {
     ListCoursesModel.getListId(req.params.id)
         .then((id_list) => {
-            ListCoursesModel.deleteCourses(id_list)
-                .then(() => {
-                    StudyPlanModel.deleteStudyPlan(req.user.id)
-                        .then((data) => {
-                            res.status(data.status).end();
+            ListCoursesModel.getCourseIDList(id_list)
+                .then((courses) => {
+                    CourseModel.updateIscritti([], courses)
+                        .then(() => {
+                            ListCoursesModel.deleteCourses(id_list)
+                                .then(() => {
+                                    StudyPlanModel.deleteStudyPlan(req.user.id)
+                                        .then((data) => {
+                                            res.status(data.status).end();
+                                        })
+                                        .catch((error) => {
+                                            res.status(error.status).json(error.message);
+                                        })
+                                })
+                                .catch(error => {
+                                    res.status(error.status).json(error.message);
+                                })
                         })
-                        .catch((error) => {
+                        .catch(error => {
                             res.status(error.status).json(error.message);
                         })
                 })
-                .catch(error => {
+                .catch(() => {
                     res.status(error.status).json(error.message);
                 })
         })
-
+        .catch(() => {
+            res.status(error.status).json(error.message);
+        })
 
 
 });
