@@ -14,7 +14,7 @@ const api = {
     
     getStudyPlan:() => {
         return new Promise((resolve, reject) => {
-            axios.get(SERVER_URL + `study-plan`)
+            axios.get(SERVER_URL + `study-plan`, {withCredentials: true})
                 .then(res => resolve(res.data))
                 .catch(err => reject({ data: err.response.data, status: err.response.status }));
 
@@ -32,7 +32,7 @@ const api = {
 
     logout: () => {
         return new Promise((resolve, reject) => {
-            axios.delete(SERVER_URL + 'sessions/current',)
+            axios.delete(SERVER_URL + 'sessions/current', {withCredentials: true})
                 .then(() => resolve())
                 .catch((err) => reject(err.response.data));
         })
@@ -40,7 +40,7 @@ const api = {
 
     getUserInfo: () => {
         return new Promise((resolve, reject) => {
-            axios.get(SERVER_URL + 'sessions/current')
+            axios.get(SERVER_URL + 'sessions/current', {withCredentials: true})
                 .then((res) => resolve(res.data))
                 .catch((err) => reject(err.response.data));
         })
@@ -48,7 +48,7 @@ const api = {
 
     getType: ()=>{
         return new Promise((resolve, reject) => {
-            axios.get(SERVER_URL + 'study-plan/type')
+            axios.get(SERVER_URL + 'study-plan/type', {withCredentials: true})
                 .then((res) => resolve(res.data))
                 .catch((err) => reject(err.response.data));
         })
@@ -56,7 +56,7 @@ const api = {
 
     createStudyPlan: (courses,ID_Type, Crediti)=>{
         return new Promise((resolve, reject) => {
-            axios.post(SERVER_URL + 'study-plan/add', {courses, ID_Type, Crediti})
+            axios.post(SERVER_URL + 'study-plan/add', {courses, ID_Type, Crediti}, {withCredentials: true})
                 .then((res) => resolve(res.data))
                 .catch((err) => reject(err.response.data));
         })
@@ -64,7 +64,7 @@ const api = {
 
     updateStudyPlan: (ID, Crediti, oldCourses, newCourses) =>{
         return new Promise((resolve, reject) => {
-            axios.put(SERVER_URL + `study-plan/${ID}`, {oldCourses, newCourses, Crediti })
+            axios.put(SERVER_URL + `study-plan/${ID}`, {oldCourses, newCourses, Crediti }, {withCredentials: true})
             .then((res) => resolve(res.data))
             .catch((err) => reject(err.response.data));
         })
@@ -73,7 +73,7 @@ const api = {
 
     deleteStudyPlan: (id_studyplan) => {
         return new Promise((resolve, reject) => {
-            axios.delete(SERVER_URL + `study-plan/${id_studyplan}`)
+            axios.delete(SERVER_URL + `study-plan/${id_studyplan}`, {withCredentials: true})
                 .then(() => resolve())
                 .catch(err => reject(err.response.data));
         })
