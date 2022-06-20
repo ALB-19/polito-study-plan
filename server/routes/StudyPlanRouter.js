@@ -6,6 +6,7 @@ const ListCoursesModel = require('../models/ListCoursesModel')
 const { check, validationResult } = require('express-validator');
 
 const withAuth = require('../middlewares/withAuth');
+const withControl = require('../middlewares/control')
 const CourseModel = require("../models/CourseModel");
 
 //GET /study-plan
@@ -13,7 +14,6 @@ const CourseModel = require("../models/CourseModel");
 router.get("/", withAuth, (req, res) => {
     StudyPlanModel.getStudyPlan(req.user.id)
         .then((data) => {
-            console.log(data.plan)
             res.status(data.status).json(data.plan);
         }).catch((error) => {
             res.status(error.status).json(error.message);
@@ -37,7 +37,7 @@ router.post("/add", [
     check('ID_Type').isInt({ min: 1, max: 2 }),
     check('Crediti').if(check('ID_Type').equals('1')).isInt({ min: 60, max: 80 }),
     check('Crediti').if(check('ID_Type').equals('2')).isInt({ min: 20, max: 40 })
-], withAuth, (req, res) => {
+], withAuth, withControl, (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) return res.status(422).json({ message: "Validation error", errors: errors.array() });
     ListCoursesModel.addCourses(req.body.courses)
@@ -66,35 +66,36 @@ router.post("/add", [
 
 router.put("/:id", [
     check('id').isInt(),
-    check('oldCourses').isArray().not().optional,
-    check('newCourses').isArray().not().optional
-]
-    , withAuth, (req, res) => {
-        ListCoursesModel.getListId(req.params.id)
-            .then((id_list) => {
-                ListCoursesModel.updateCourses(id_list, req.body.oldCourses, req.body.newCourses)
-                    .then(() => {
-                        StudyPlanModel.updateStudyPlan(req.params.id, req.user.id, req.body.Crediti)
-                            .then(() => {
-                                CourseModel.updateIscritti(req.body.newCourses, req.body.oldCourses)
-                                    .then((data) => {
-                                        res.status(data.status).end();
-                                    })
-                                    .catch((error) => {
-                                        res.status(error.status).json(error.message);
-                                    })
-                            })
-                            .catch((error) => {
-                                res.status(error.status).json(error.message);
-                            })
-                    })
-                    .catch(error => res.status(error.status).json(error.message));
-            })
-            .catch(error => {
-                res.status(error.status).json(error.message);
-            })
+    check('oldCourses').isArray().not().optional(),
+    check('newCourses').isArray().not().optional()
+], withAuth, withControl, (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) return res.status(422).json({ message: "Validation error", errors: errors.array() });
+    StudyPlanModel.getListId(req.params.id)
+        .then((id_list) => {
+            ListCoursesModel.updateCourses(id_list, req.body.oldCourses, req.body.newCourses)
+                .then(() => {
+                    StudyPlanModel.updateStudyPlan(req.params.id, req.user.id, req.body.Crediti)
+                        .then(() => {
+                            CourseModel.updateIscritti(req.body.newCourses, req.body.oldCourses)
+                                .then((data) => {
+                                    res.status(data.status).end();
+                                })
+                                .catch((error) => {
+                                    res.status(error.status).json(error.message);
+                                })
+                        })
+                        .catch((error) => {
+                            res.status(error.status).json(error.message);
+                        })
+                })
+                .catch(error => res.status(error.status).json(error.message));
+        })
+        .catch(error => {
+            res.status(error.status).json(error.message);
+        })
 
-    })
+})
 
 
 
@@ -104,7 +105,9 @@ router.put("/:id", [
 router.delete("/:id", [
     check('id').isInt()
 ], withAuth, (req, res) => {
-    ListCoursesModel.getListId(req.params.id)
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) return res.status(422).json({ message: "Validation error", errors: errors.array() });
+    StudyPlanModel.getListId(req.params.id)
         .then((id_list) => {
             ListCoursesModel.getCourseIDList(id_list)
                 .then((courses) => {

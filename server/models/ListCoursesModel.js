@@ -25,16 +25,6 @@ module.exports = {
         })
     },
 
-    getListId: (id_studyplan) => {
-        return new Promise((resolve, reject) => {
-            const query = "SELECT ID_List FROM STUDY_PLAN WHERE ID = ?"
-            db.get(query, [id_studyplan], (err, row) => {
-                if (err) reject({ message: err.message, status: 500 });
-                else if (!row) reject({ message: "Non sono state trovate liste associate.", status: 404 });
-                else resolve(row.ID_List);
-            })
-        })
-    },
 
     updateCourses: (id_list, oldCourses, newCourses) => {
         return new Promise((resolve, reject) => {

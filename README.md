@@ -268,8 +268,8 @@ Un oggetto JSON  contentente i dati del piano di studio da modificare.
 ```
 {
     "oldCourses": ["01TYMOV", "01UDUOV"],
-    "newCourse": ["01SQOOV","01TXYOV","01UDUOV"],
-    Crediti: "24"
+    "newCourses": ["01SQOOV","01TXYOV","01UDUOV"],
+    "Crediti": "24"
 }
 ```
 
