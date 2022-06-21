@@ -33,20 +33,20 @@ router.get("/type", withAuth, (req, res) => {
 
 //POST /study-plan/add
 router.post("/add", [
-    check('courses').isArray({ min: 2 }).not().optional(),
-    check('ID_Type').isInt({ min: 1, max: 2 }),
-    check('Crediti').if(check('ID_Type').equals('1')).isInt({ min: 60, max: 80 }),
-    check('Crediti').if(check('ID_Type').equals('2')).isInt({ min: 20, max: 40 })
+    check('courses').isArray().exists({ checkNull: true }),
+    check('ID_Type').isInt({ min: 1, max: 2 }).exists({ checkFalsy: true }),
+    check('Crediti').if(check('ID_Type').equals('1')).isInt({ min: 60, max: 80 }).exists({ checkFalsy: true }),
+    check('Crediti').if(check('ID_Type').equals('2')).isInt({ min: 20, max: 40 }).exists({ checkFalsy: true }),
 ], withAuth, withControl, (req, res) => {
     const errors = validationResult(req)
-    if (!errors.isEmpty()) return res.status(422).json({ message: "Validation error", errors: errors.array() });
+    if (!errors.isEmpty()) return res.status(422).json("Validation error");
     ListCoursesModel.addCourses(req.body.courses)
         .then((ID_List) => {
             StudyPlanModel.addStudyPlan(ID_List, req.body.ID_Type, req.user.id, req.body.Crediti)
                 .then(() => {
                     CourseModel.updateIscritti(req.body.courses, [])
-                        .then((data) => {
-                            res.status(data.status).end();
+                        .then(() => {
+                            res.status(200).end();
                         })
                         .catch((error) => {
                             res.status(error.status).json(error.message);
@@ -65,9 +65,12 @@ router.post("/add", [
 //PUT /stuy-plan/:id
 
 router.put("/:id", [
-    check('id').isInt(),
-    check('oldCourses').isArray().not().optional(),
-    check('newCourses').isArray().not().optional()
+    check('id').isInt().exists({ checkFalsy: true }),
+    check('oldCourses').isArray().exists({ checkNull: true }),
+    check('newCourses').isArray().exists({ checkNull: true }),
+    check('type').isInt({ min: 1, max: 2 }).exists({ checkFalsy: true }),
+    check('Crediti').if(check('type').equals('1')).isInt({ min: 60, max: 80 }).exists({ checkFalsy: true }),
+    check('Crediti').if(check('type').equals('2')).isInt({ min: 20, max: 40 }).exists({ checkFalsy: true }),
 ], withAuth, withControl, (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) return res.status(422).json({ message: "Validation error", errors: errors.array() });
@@ -78,8 +81,8 @@ router.put("/:id", [
                     StudyPlanModel.updateStudyPlan(req.params.id, req.user.id, req.body.Crediti)
                         .then(() => {
                             CourseModel.updateIscritti(req.body.newCourses, req.body.oldCourses)
-                                .then((data) => {
-                                    res.status(data.status).end();
+                                .then(() => {
+                                    res.status(200).end();
                                 })
                                 .catch((error) => {
                                     res.status(error.status).json(error.message);
@@ -103,7 +106,7 @@ router.put("/:id", [
 //DELETE /study-plan/:id
 
 router.delete("/:id", [
-    check('id').isInt()
+    check('id').isInt().exists({ checkFalsy: true }),
 ], withAuth, (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) return res.status(422).json({ message: "Validation error", errors: errors.array() });

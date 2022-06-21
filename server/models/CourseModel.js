@@ -3,7 +3,6 @@
 const db = require('../db/dbmiddleware');
 
 module.exports = {
-
     getAll: () => {
         return new Promise((resolve, reject) => {
             const query = "SELECT C.Code, C.Nome, C.CFU, C.Max_Studenti, C.Propedeuticità, C.Iscritti, C1.Nome as Prop_name, C1.Code as Prop_code FROM COURSE as C LEFT JOIN COURSE as C1 ON C.Propedeuticità=C1.Code ORDER BY C.Nome";
@@ -48,42 +47,41 @@ module.exports = {
     },
 
     updateIscritti: (newCourses, oldCourses) => {
-        return new Promise((resolve, reject) => {
-            const queryIncr = "UPDATE COURSE SET Iscritti = Iscritti + 1 WHERE Code = ?"
-            const queryDecr = "UPDATE COURSE SET Iscritti = Iscritti - 1 WHERE Code = ?"
-
-            const stmt_Incr = db.prepare(queryIncr);
-            const stmt_Decr = db.prepare(queryDecr);
-
-            oldCourses.forEach(course => {
-                stmt_Decr.run([course], function (err) {
+        const addIscritti = (course) => {
+            return new Promise((resolve, reject) => {
+                const query = "UPDATE COURSE SET Iscritti = Iscritti + 1 WHERE Code = ?"
+                db.run(query, [course], (err) => {
                     if (err) reject({ message: err.message, status: 500 });
+                    else resolve();
                 })
-            });
+            })
+        }
 
-            newCourses.forEach(course => {
-                stmt_Incr.run([course], function (err) {
+        const removeIscritti = (course) => {
+            return new Promise((resolve, reject) => {
+                const query = "UPDATE COURSE SET Iscritti = Iscritti - 1 WHERE Code = ?"
+                db.run(query, [course], (err) => {
                     if (err) reject({ message: err.message, status: 500 });
+                    else resolve();
                 })
-            });
+            })
+        }
 
-            resolve({status: 200});
-        })
-
+        return Promise.all(newCourses.map(course => {
+            return addIscritti(course);
+        }).concat(oldCourses.map(course => {
+            return removeIscritti(course);
+        })))
     },
 
     getPropCourseWithCode: (code) => {
         return new Promise((resolve, reject) => {
-            const query= "SELECT Propedeuticità FROM COURSE WHERE Code= ? "
+            const query = "SELECT Propedeuticità FROM COURSE WHERE Code= ? "
             db.get(query, [code], (err, row) => {
                 if (err) reject({ message: err.message, status: 500 });
                 else if (!row) reject({ message: "Non c'è un corso associato al codice", status: 404 });
-                else resolve (row.Propedeuticità);
+                else resolve(row.Propedeuticità);
             })
         })
     }
-
-
-
-
 }

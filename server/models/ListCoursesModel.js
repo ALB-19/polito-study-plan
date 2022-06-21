@@ -26,31 +26,36 @@ module.exports = {
     },
 
 
+
     updateCourses: (id_list, oldCourses, newCourses) => {
-        return new Promise((resolve, reject) => {
-            const query_delete = "DELETE FROM LIST_COURSES WHERE ID = ? and Code = ?";
-            const query_insert = "INSERT INTO LIST_COURSES (ID, Code) VALUES (?, ?)";
-
-            const stmt_delete = db.prepare(query_delete);
-            const stmt_insert = db.prepare(query_insert);
-
-            oldCourses.forEach(course => {
-                stmt_delete.run([id_list, course], function (err) {
+        const insertCourse = (id_list, course) => {
+            return new Promise((resolve, reject) => {
+                const query = "INSERT INTO LIST_COURSES (ID, Code) VALUES (?, ?)";
+                db.run(query, [id_list, course], (err) => {
                     if (err) reject({ message: err.message, status: 500 });
+                    else resolve();
                 })
-            });
+            })
+        }
 
-            newCourses.forEach(course => {
-                stmt_insert.run([id_list, course], function (err) {
+        const removeCourse = (id_list, course) => {
+            return new Promise((resolve, reject) => {
+                const query = "DELETE FROM LIST_COURSES WHERE ID = ? and Code = ?";
+                db.run(query, [id_list, course], (err) => {
                     if (err) reject({ message: err.message, status: 500 });
+                    else resolve();
                 })
-            });
+            })
+        }
 
-            resolve();
-        })
+        return Promise.all(newCourses.map(course => {
+            return insertCourse(id_list, course);
+        }).concat(oldCourses.map(course => {
+            return removeCourse(id_list, course);
+        })))
     },
 
-    getCourseIDList: (id_list) =>{
+    getCourseIDList: (id_list) => {
         return new Promise((resolve, reject) => {
             const query = "SELECT Code FROM LIST_COURSES WHERE ID = ?"
             db.all(query, [id_list], (err, rows) => {
@@ -59,7 +64,7 @@ module.exports = {
                 else resolve(rows.map(row => row.Code));
             })
         })
-    },  
+    },
 
 
     deleteCourses: (id_list) => {

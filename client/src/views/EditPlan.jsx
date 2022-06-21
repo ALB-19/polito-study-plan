@@ -62,7 +62,7 @@ const EditPlan = (props) => {
             const oldCourses = session.plan.courses.filter(c => !planCourses.includes(c));
             const newCourses = planCourses.filter(c => !session.plan.courses.includes(c));
 
-            api.updateStudyPlan(session.plan.ID, credits, oldCourses, newCourses)
+            api.updateStudyPlan(session.plan.ID, credits, oldCourses, newCourses, session.plan.type.ID)
                 .then(() => {
                     notify.success('Piano di studio aggiornato correttamente!');
                     setDirty(true);
@@ -96,6 +96,7 @@ const EditPlan = (props) => {
                     <div className="d-flex flex-column">
                         <h4>Crediti attuali: {credits}</h4>
                         <div>
+                            <h6>Tipologia: {session.plan.type.Nome}</h6>
                             <h6>Minimo di crediti da aggiungere: {session.plan.type.Min_Credits}</h6>
                             <h6>Massimo di crediti da aggiungere: {session.plan.type.Max_Credits}</h6>
                         </div>

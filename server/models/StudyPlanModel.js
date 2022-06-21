@@ -6,7 +6,7 @@ module.exports = {
 
     getStudyPlan: (id) => {
         return new Promise((resolve, reject) => {
-            const query = "SELECT SP.ID, SP.ID_List, T.Nome, T.Max_Credits, T.Min_Credits, SP.Crediti, LC.Code  FROM STUDY_PLAN SP , LIST_COURSES LC, TYPE_STUDY_PLAN T WHERE SP.ID_User= ? AND SP.ID_List = LC.ID AND SP.ID_Type = T.ID"
+            const query = "SELECT SP.ID, SP.ID_List, T.ID as TypeID, T.Nome, T.Max_Credits, T.Min_Credits, SP.Crediti, LC.Code  FROM STUDY_PLAN SP , LIST_COURSES LC, TYPE_STUDY_PLAN T WHERE SP.ID_User= ? AND SP.ID_List = LC.ID AND SP.ID_Type = T.ID"
             db.all(query, [id], (err, rows) => {
                 if (err) reject({ message: err.message, status: 500 });
                 else if (rows.length === 0) reject({ message: "L'utente non ha un piano di studio", status: 404 });
@@ -16,6 +16,7 @@ module.exports = {
                         ID_List: rows[0].ID_List,
                         Crediti: rows[0].Crediti,
                         type: {
+                            ID: rows[0].TypeID,
                             Nome: rows[0].Nome,
                             Max_Credits: rows[0].Max_Credits,
                             Min_Credits: rows[0].Min_Credits

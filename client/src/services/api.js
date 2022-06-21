@@ -62,9 +62,9 @@ const api = {
         })
     },
 
-    updateStudyPlan: (ID, Crediti, oldCourses, newCourses) =>{
+    updateStudyPlan: (ID, Crediti, oldCourses, newCourses, type) =>{
         return new Promise((resolve, reject) => {
-            axios.put(SERVER_URL + `study-plan/${ID}`, {oldCourses, newCourses, Crediti }, {withCredentials: true})
+            axios.put(SERVER_URL + `study-plan/${ID}`, {oldCourses, newCourses, Crediti, type}, {withCredentials: true})
             .then((res) => resolve(res.data))
             .catch((err) => reject(err.response.data));
         })
