@@ -80,7 +80,7 @@ const withControl = (req, res, next) => {
                         validationError = true;
                     }
                     // check massimo studenti iscritti
-                    else if (req.body.newCourses.includes(course.Code) && course.Max_Studenti && course.Max_Studenti < course.Iscritti + 1) {
+                    else if (req.body.courses.includes(course.Code) && course.Max_Studenti && course.Max_Studenti < course.Iscritti + 1) {
                         validationError = true;
                     }
 

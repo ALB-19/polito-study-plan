@@ -54,7 +54,7 @@ const EditPlan = (props) => {
 
     const [modal, setModal] = useModal(() => {
         if (credits > session.plan.type.Max_Credits) {
-            notify.error(`Limite non rispettato. Un piano di studio ${session.plan.type.Nome} deve avere al massimo ${session.plan.type.Min_Credits} crediti.`)
+            notify.error(`Limite non rispettato. Un piano di studio ${session.plan.type.Nome} deve avere al massimo ${session.plan.type.Max_Credits} crediti.`)
         }
         else if (credits < session.plan.type.Min_Credits) {
             notify.error(`Limite non rispettato. Un piano di studio ${session.plan.type.Nome} deve avere almeno ${session.plan.type.Min_Credits} crediti.`)
