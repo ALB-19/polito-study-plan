@@ -1,13 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+
+import './styles/index.scss';
+
 import App from './App';
+
 import reportWebVitals from './reportWebVitals';
+
+
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { ToastContainer } from 'react-toastify';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <ToastContainer newestOnTop={false} />
+
+    <BrowserRouter>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+
+    </BrowserRouter>
   </React.StrictMode>
 );
 
