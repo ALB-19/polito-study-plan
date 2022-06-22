@@ -16,7 +16,8 @@ const LoginForm = () => {
     const notify = useNotification();
     const navigate = useNavigate();
 
-    const LoginSchema = Yup.object().shape({
+    const LoginSchema = Yup.object().shape({ 
+        //check sui dati inseriti nel form
         username: Yup.string().email('Invalid email').required('Required'),
         password: Yup.string().required('Required')
     });
@@ -26,7 +27,6 @@ const LoginForm = () => {
         api.login(credentials)
             .then(user => {
                 setDirty(true);
-                // setSession({ user: { ...user }, loggedIn: true });
                 notify.success(`Benvenuto ${user.name}!`)
                 navigate('/', { replace: true });
             })

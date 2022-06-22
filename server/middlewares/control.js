@@ -4,31 +4,43 @@ const CourseModel = require("../models/CourseModel");
 const ListCoursesModel = require('../models/ListCoursesModel')
 const StudyPlanModel = require('../models/StudyPlanModel');
 
-const withControl = (req, res, next) => { //req contiene le stesse cose che contiene le req del router e per questo possiamo fare quello scritto sotto
+const withControl = (req, res, next) => { 
     CourseModel.getAll()
         .then((data) => {
-            if (req.params.id) { //se abbiamo l'id vuol dire che abbiamo fatto la put e quindi stiamo aggiornando 
+            if (req.params.id) { //Controllo se esiste l'id. Se true allora si tratta di una put 
                 StudyPlanModel.getListId(req.params.id)
                     .then((id_list) => {
-                        ListCoursesModel.getCourseIDList(id_list) //prendiamo tutti i corsi che ci sono in studyplan prima dell'update
+                        ListCoursesModel.getCourseIDList(id_list) 
                             .then((planCourses) => {
-                                const planCoursesUpdate = data.courses.filter(c => { //(update) array dei corsi dello study plan tenendo conto di tutti gli aggiornameti andati a buon fine (presupponiamo questo)
-                                    return (!req.body.oldCourses.includes(c.Code) //togliamo corsi che stanno in delete ovvero quelli che vogliamo eliminare
-                                        && (req.body.newCourses.includes(c.Code) //prendiamo quelli che stanno in insert
-                                            || planCourses.includes(c.Code))
-                                    ) //prendiamo quelli che stanno già in study plan
-                                }) //cosi alla fine abbiamo creato l'effettiva lista di corsi che ci interessa (cose se prevedessimo il futuro )
-                                //poi andiamo a ritroso facendo i check 
-                                let validationError = false; //presupponiamo 0 errori inzialmente
+                                const planCoursesUpdate = data.courses.filter(c => { //Creazione in anticipo dell'array che vorrei se tutto andasse a buon fine.
+                                    return (!req.body.oldCourses.includes(c.Code)    //rimozione dei corsi da eliminare
+                                        && (req.body.newCourses.includes(c.Code)     //inserimento dei corsi da aggiungere
+                                            || planCourses.includes(c.Code))         //mantenimento dei corsi da non rimuovere, già presenti
+                                    ) 
+                                }) 
+                                
+                                //ragionamento a ritroso per verificare tutti i vincoli
 
+                                const initialValue = 0;
+                                const credits = planCoursesUpdate.reduce((prevValue, currentCourse) => prevValue + currentCourse.CFU, initialValue);
+
+                                let validationError = false; // 0 errori inzialmente
+                                
                                 planCoursesUpdate.forEach(course => {
+                                    // check propedeuticità
                                     if (course.Propedeuticità.Code && !planCoursesUpdate.includes(data.courses.find(c => c.Code === course.Propedeuticità.Code))) {
                                         validationError = true;
                                     }
+                                    // check incompatibilità
                                     else if (course.incompatibilita && course.incompatibilita.find(coursInc => planCoursesUpdate.includes(data.courses.find(course => course.Code === coursInc.Code)))) {
                                         validationError = true;
                                     }
-                                    else if (course.Max_Studenti && course.Max_Studenti === course.Iscritti) {
+                                    // check massimo studenti iscritti
+                                    else if (req.body.newCourses.includes(course.Code) && course.Max_Studenti && course.Max_Studenti < course.Iscritti + 1) {
+                                        validationError = true;
+                                    }
+                                    //check crediti passati dal body
+                                    else if (credits !== parseInt(req.body.Crediti)) {
                                         validationError = true;
                                     }
                                 });
@@ -47,26 +59,36 @@ const withControl = (req, res, next) => { //req contiene le stesse cose che cont
                         return res.status(err.status).json(err.message);
                     })
             }
-            else {
+            else { // condizione iniziale false --> post
 
-                const planCoursesUpdate = data.courses.filter(c => { //(add) array dei corsi dello study plan da aggiungere presupponendo 0 errori
-                    return req.body.courses.includes(c.Code) //qui è una post e quindi prendiamo direttamente l'array dei corsi che si vogliono inserire 
+                const planCoursesUpdate = data.courses.filter(c => { 
+                    return req.body.courses.includes(c.Code) 
                 })
+
+                const initialValue = 0;
+                const credits = planCoursesUpdate.reduce((prevValue, currentCourse) => prevValue + currentCourse.CFU, initialValue);
 
                 let validationError = false;
 
                 planCoursesUpdate.forEach(course => {
+                    // check propedeuticità
                     if (course.Propedeuticità.Code && !planCoursesUpdate.includes(data.courses.find(c => c.Code === course.Propedeuticità.Code))) {
                         validationError = true;
                     }
+                    //check incompatibilità
                     else if (course.incompatibilita && course.incompatibilita.find(coursInc => planCoursesUpdate.includes(data.courses.find(course => course.Code === coursInc.Code)))) {
                         validationError = true;
                     }
-                    else if (course.Max_Studenti && course.Max_Studenti === course.Iscritti) {
+                    // check massimo studenti iscritti
+                    else if (req.body.newCourses.includes(course.Code) && course.Max_Studenti && course.Max_Studenti < course.Iscritti + 1) {
+                        validationError = true;
+                    }
+
+                    else if (credits !== parseInt(req.body.Crediti)) {
                         validationError = true;
                     }
                 });
-
+                 //check crediti passati dal body
                 if (validationError) {
                     return res.status(422).json('condizioni non rispettate')
                 }

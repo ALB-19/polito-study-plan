@@ -10,7 +10,6 @@ const withControl = require('../middlewares/control')
 const CourseModel = require("../models/CourseModel");
 
 //GET /study-plan
-
 router.get("/", withAuth, (req, res) => {
     StudyPlanModel.getStudyPlan(req.user.id)
         .then((data) => {
@@ -63,7 +62,6 @@ router.post("/add", [
 
 
 //PUT /stuy-plan/:id
-
 router.put("/:id", [
     check('id').isInt().exists({ checkFalsy: true }),
     check('oldCourses').isArray().exists({ checkNull: true }),
@@ -73,7 +71,9 @@ router.put("/:id", [
     check('Crediti').if(check('type').equals('2')).isInt({ min: 20, max: 40 }).exists({ checkFalsy: true }),
 ], withAuth, withControl, (req, res) => {
     const errors = validationResult(req)
-    if (!errors.isEmpty()) return res.status(422).json({ message: "Validation error", errors: errors.array() });
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ message: "Validation error", errors: errors.array() });
+    }
     StudyPlanModel.getListId(req.params.id)
         .then((id_list) => {
             ListCoursesModel.updateCourses(id_list, req.body.oldCourses, req.body.newCourses)
@@ -104,7 +104,6 @@ router.put("/:id", [
 
 
 //DELETE /study-plan/:id
-
 router.delete("/:id", [
     check('id').isInt().exists({ checkFalsy: true }),
 ], withAuth, (req, res) => {

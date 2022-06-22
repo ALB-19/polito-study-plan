@@ -6,7 +6,6 @@ const { check, validationResult } = require('express-validator'); // validation 
 const passport = require('passport');
 
 //POST /sessions
-//login
 router.post('/', [
     check('username').isEmail().not().optional(),
     check('password').isStrongPassword({
@@ -31,7 +30,6 @@ router.post('/', [
 });
 
 // DELETE /sessions/current
-//logout
 router.delete('/current', (req, res, next) => {
     req.logout((err) => {
         if (err) return next(err);
@@ -40,7 +38,6 @@ router.delete('/current', (req, res, next) => {
 })
 
 // GET /current
-// check if an user is logged in or not
 router.get('/current', (req, res) => {
     if (req.isAuthenticated())
         return res.status(200).json(req.user);

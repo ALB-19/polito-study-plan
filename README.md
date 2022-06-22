@@ -4,30 +4,26 @@
 ## React Client Application Routes
 
 - Route  ` / `: home-page dove si possono vedere tutti i corsi offerti dall'università. Route non protetta dall'autenticazione dell'utente. Dopo il login, la stessa route diventa home-page loggedIn dove l'utente può continuare a vedere la stessa lista completa dei corsi. 
-- Route `/login`: Route dove c'è il modulo di login.
+- Route `/login`: Route dove c'è il modulo di login per effettuare l'autenticazione.
 - Route `/studyPlan`: Route accessibile solo dopo che l'utente si è autenticato. Fa parte delle Protected Route. Qui si può vedere un piano di studio, se già esistente, oppure crearne uno nuovo. 
-- Route `/studyPlan/edit`: Pagina di editing. Accessibile solo dopo che l'utente si è autenticato. Fa parte delle Protected Route. Qui, l'utente può modificare il proprio piano di studio, aggiungendo o eliminando corsi presi dall'offerta formativa. 
+- Route `/studyPlan/edit`: Pagina di editing. Accessibile solo dopo che l'utente si è autenticato. Fa parte delle Protected Route. Qui, l'utente può modificare il proprio piano di studio,se già esistente, aggiungendo o eliminando corsi presi dall'offerta formativa.
 - Route `/*`: Qualsiasi altro percorso è associato a questa Route nella quale l'applicazione mostra una pagina con not found error.
 
-
-
-- Route `/something/:param`: page content and purpose, param specification
-- ...
 
 ## API Server
 Di seguito sono riportate le API HTTP progettate ed implementate nel progetto.
 
-#### `POST /api/sessions`
+#### **`POST /api/sessions`**
 
 Esegue l'autenticazione utente e crea una nuova sessione per l'utente.
 
-##### **Request header:**
+**Request header:**
 
 `Content-Type: application/json`
 
-##### **Request body:**
+**Request body:**
 
-A JSON object contenente username e password.
+JSON object contenente username e password.
 
 ```
 {
@@ -36,7 +32,7 @@ A JSON object contenente username e password.
 }
 ```
 
-##### **Response body**
+**Response body**
 
 `HTTP status code 200 OK`
 
@@ -48,7 +44,7 @@ A JSON object contenente username e password.
 }
 ```
 
-##### **Error responses**
+**Error responses**
 
 - `HTTP status code 500 Internal Server Error` (generic server error)
 - `HTTP status code 422 Unprocessable Entity` (validation error)
@@ -56,32 +52,32 @@ A JSON object contenente username e password.
 
 
 
-#### `DELETE /api/sessions/current`
+#### **`DELETE /api/sessions/current`**
 
 Esegue il logout dell'utente ed elimina la sessione utente corrente.
 
-##### **Request header:**
+**Request header:**
 
-`Session: req.user to retrieve the logged in user id`
+`Session: req.user per ottenere l'id dell'utente loggato`
 
-##### **Response body**
+**Response body**
 
 `HTTP status code 200 OK`
 
-##### **Error responses**
+**Error responses**
 
 - `HTTP status code 500 Internal Server Error` (generic server error)
 
 
-#### `GET /api/sessions/current`
+#### **`GET /api/sessions/current`**
 
 Prende le informazioni dell'utente se è loggato.
 
-##### **Request header:**
+**Request header:**
 
-`Session: req.user to retrieve the logged in user id`
+`Session: req.user per ottenere l'id dell'utente loggato`
 
-##### **Response body**
+**Response body**
 
 `HTTP status code 200 OK`
 
@@ -92,8 +88,7 @@ Prende le informazioni dell'utente se è loggato.
     "name": "User1"
 }
 ```
-
-##### **Error responses**
+ **Error responses**
 
 - `HTTP status code 500 Internal Server Error` (generic server error)
 - `HTTP status code 404 Not Found` (user not found error)
@@ -101,15 +96,12 @@ Prende le informazioni dell'utente se è loggato.
 
 
 
-#### `GET /api/courses/all`
+#### **`GET /api/courses/all`**
 
-Ottieni tutti i corsi con le informazioni associate.
+Si ottiene un array con le informazioni di tutti i corsi offerti, incluse le incompatibilità. La visualizzazione dei corsi è ordinata per nome. 
 
-##### **Request header:**
 
-`Content-Type: application/json`
-
-##### Response body
+**Response body**
 
 `HTTP status code 200 OK`
 
@@ -137,22 +129,22 @@ Ottieni tutti i corsi con le informazioni associate.
   ]
 ```
 
-##### Error responses
+**Error responses**
 
 - `HTTP status code 500 Internal Server Error` (generic server error)
-- `HTTP status code 404 Not Found` ("Non sono stati trovati corsi" - "Non sono state trovate incompatibilità")
+- `HTTP status code 404 Not Found` ("Non sono stati trovati corsi")
 
 
 
-#### `GET /api/study-plan`
+#### **`GET /api/study-plan`**
 
-Ottieni un piano di studio associato ad un utente quando è loggato. 
+Ottieni informazioni sul piano studio di un utente quando è loggato inclusa la lista dei corsi e le informazioni sulla tipologia scelta.
 
-##### **Request header:**
+**Request header:**
 
-`Session: req.user to retrieve the logged in user id`
+`Session: req.user per ottenere l'id dell'utente loggato`
 
-##### Response body
+**Response body**
 
 `HTTP status code 200 OK`
 
@@ -174,7 +166,7 @@ Ottieni un piano di studio associato ad un utente quando è loggato.
 }
 ```
 
-##### Error responses
+**Error responses**
 
 - `HTTP status code 500 Internal Server Error` (generic server error)
 - `HTTP status code 404 Not Found` ("L'utente non ha un piano di studio")
@@ -182,15 +174,15 @@ Ottieni un piano di studio associato ad un utente quando è loggato.
 
 
 
-#### `GET /api/study-plan/type`
+#### **`GET /api/study-plan/type`**
 
 Ottieni informazioni sui tipi di piano di studio. Azione possibile solo dopo l'autenticazione. 
 
-##### **Request header:**
+**Request header:**
 
-`Session: req.user to retrieve the logged in user id`
+`Session: req.user per ottenere l'id dell'utente loggato`
 
-##### Response body
+**Response body**
 
 `HTTP status code 200 OK`
 
@@ -211,24 +203,24 @@ Ottieni informazioni sui tipi di piano di studio. Azione possibile solo dopo l'a
 ]
 ```
 
-##### Error responses
+**Error responses**
 
 - `HTTP status code 500 Internal Server Error` (generic server error)
 - `HTTP status code 404 Not Found` ("Non ci sono tipi")
 - `HTTP status code 401 Unauthorized` (authentication error)
 
 
-#### `POST /api/study-plan/add`
+#### **`POST /api/study-plan/add`**
 
-Crea un piano di studio,per la prima volta, associato ad un utente loggato.
+Crea un piano di studio,per la prima volta, associato ad un utente loggato. Inoltre crea e riempie la lista dei corsi e aggiorna il numero di studenti iscritti ad ogni corso. 
 
 
-##### **Request header:**
+**Request header:**
 
-- `Session: req.user to retrieve the logged in user id`
+- `Session: req.user per ottenere l'id dell'utente loggato`
 - `Content-Type: application/json`
 
-##### **Request body:**
+ **Request body:**
 
 Un oggetto JSON  contentente i dati del piano di studio da inserire.
 
@@ -236,15 +228,15 @@ Un oggetto JSON  contentente i dati del piano di studio da inserire.
 {
     "courses": ["01TYMOV", "01UDUOV"],
     "ID_Type": "2",
-    Crediti: "24"
+    "Crediti": "24"
 }
 ```
 
-#### Response body
+**Response body**
 
 `HTTP status code 200 OK`
 
-##### Error responses
+**Error responses**
 
 - `HTTP status code 500 Internal Server Error` (generic server error)
 - `HTTP status code 422 Unprocessable Entity` (validation error)
@@ -252,18 +244,19 @@ Un oggetto JSON  contentente i dati del piano di studio da inserire.
 
 
 
-#### `PUT api/study-plan/:id`
+#### **`PUT api/study-plan/:id`**
 
-Modifca un piano di studio associato ad un utente loggato, passando l'id del piano di studio già esistente. 
+Modifca un piano di studio associato ad un utente loggato, passando l'id del piano di studio già esistente. Inoltre aggiorna il numero di studenti iscritti ad ogni corso. 
 
-##### **Request header:**
+**Request header:**
 
-- `Session: req.user to retrieve the logged in user id`
-- `Params: req.params.id to retrieve study plan id`
+- `Session: req.user per ottenere l'id dell'utente loggato`
+- `Params: req.params.id per ottenere l'id del piano di studio`
+- `Content-Type: application/json`
 
-##### **Request body:**
+**Request body:**
 
-Un oggetto JSON  contentente i dati del piano di studio da modificare.
+Un oggetto JSON  contentente i dati delle modifiche da apportare.
 
 ```
 {
@@ -273,11 +266,11 @@ Un oggetto JSON  contentente i dati del piano di studio da modificare.
 }
 ```
 
-##### Response body
+**Response body**
 
 `HTTP status code 200 OK`
 
-##### Error responses
+**Error responses**
 
 - `HTTP status code 500 Internal Server Error` (generic server error)
 - `HTTP status code 422 Unprocessable Entity` (validation error)
@@ -285,32 +278,34 @@ Un oggetto JSON  contentente i dati del piano di studio da modificare.
 - `HTTP status code 401 Unauthorized` (authentication error)
 
 
-#### `DELETE /api/study-plan/:id`
+#### **`DELETE /api/study-plan/:id`**
 
-Cancella un piano di studio associato ad un utente loggato, passando l'id del piano studio. 
-
-
-##### **Request header:**
-
-- `Session: req.user to retrieve the logged in user id`
-- `Params: req.params.id to retrieve study plan id`
+Cancella un piano di studio associato ad un utente loggato, passando l'id del piano studio. Inoltre aggiorna il numero di studenti iscritti ad ogni corso.
 
 
-##### Response body
+**Request header:**
+
+- `Session: req.user per ottenere l'id dell'utente loggato`
+- `Params: req.params.id per ottenere l'id del piano di studio`
+
+**Response body**
 
 `HTTP status code 200 OK`
 
-##### Error responses
+**Error responses**
 
 - `HTTP status code 500 Internal Server Error` (generic server error)
+- `HTTP status code 422 Unprocessable Entity` (validation error)
 - `HTTP status code 404 Not Found` (study plan not found error)
 - `HTTP status code 401 Unauthorized` (authentication error)
 
 
 
-## Database Tables
+## **Database Tables**
+
+- **COURSE**: contiene le informazioni dei corsi offerti.
 ```
- "COURSE" (
+ COURSE (
 	"Code"
 	"Nome"
 	"CFU"	
@@ -321,8 +316,9 @@ Cancella un piano di studio associato ad un utente loggato, passando l'id del pi
 	FOREIGN KEY("Propedeuticità") REFERENCES "COURSE"("Code")
 );
 ```
+- **INCOMPATIBILITY**: contiene le informazioni sulle incompatibilità tra corsi.
 ```
-"INCOMPATIBILITY" (
+INCOMPATIBILITY (
 	"ID"
 	"Course_Code"	
 	"Incomp_Code"
@@ -332,16 +328,18 @@ Cancella un piano di studio associato ad un utente loggato, passando l'id del pi
 	FOREIGN KEY("Course_Code") REFERENCES "COURSE"("Code")
 );
 ```
+- **LIST_COURSES**: contiene le informazioni sulla lista dei corsi associata ad un piano studio.
 ```
- "LIST_COURSES" (
+ LIST_COURSES (
 	"ID"	
 	"Code"	
 	PRIMARY KEY("ID","Code"),
 	FOREIGN KEY("Code") REFERENCES "COURSE"("Code")
 );
 ```
+- **STUDY_PLAN**: contiene le informazioni di un piano studio.
 ```
-"STUDY_PLAN" (
+STUDY_PLAN (
 	"ID"
 	"ID_List"
 	"ID_Type"
@@ -353,8 +351,9 @@ Cancella un piano di studio associato ad un utente loggato, passando l'id del pi
 	FOREIGN KEY("ID_Type") REFERENCES "TYPE_STUDY_PLAN"("ID")
 );
 ```
+- **TYPE_STUDY_PLAN**: contiene le informazioni relative alle tipologie dei vari piani studio.
 ```
-"TYPE_STUDY_PLAN" (
+TYPE_STUDY_PLAN (
 	"ID"
 	"Nome"
 	"Max_Credits"
@@ -362,8 +361,9 @@ Cancella un piano di studio associato ad un utente loggato, passando l'id del pi
 	PRIMARY KEY("ID" AUTOINCREMENT)
 );
 ```
+- **USER**: contiene le informazioni degli utenti.
 ```
-"USER" (
+USER (
 	"ID"
 	"Email"
 	"Nome"
@@ -376,24 +376,27 @@ Cancella un piano di studio associato ad un utente loggato, passando l'id del pi
 
 ## Main React Components
 
-- `Course` (in `./components/Course.jsx`): componente che gestisce la visualizzazione dei corsi, con tutte le informazioni associate,sia nella home-page senza autenticazione e sia nella home page loggedIn. Inoltre qui, quando si arriva nella sezione di editing, si gestiscono i bottoni di add e remove dal piano di studio. 
-- `LoginForm` (in `./components/LoginForm.jsx`): componente che gestisce il form per il log in.
-- `StudyPlan` (in `./view/StudyPlan.jsx`): componente che gestisce la creazione,eliminazione di un piano di studio. Qui viene effettivamente visualizzato il piano di studio di un utente con tutte le informazioni.
-- `EditPlan` (in `./view/EditPlan.jsx`): componente che gestisce la modifica, con salvataggio annesso, di un piano di studio di un utente. Qui vengono gestite tutte le validazioni per salvare un piano di studio coerente con le specifiche. 
+### **Components**
+- `Course` (in `components/Course.jsx`): componente che gestisce la visualizzazione dei corsi, con tutte le informazioni associate,sia nella home-page senza autenticazione e sia nella home page loggedIn. Inoltre qui, quando si arriva nella sezione di editing, si gestiscono i bottoni di add e remove di un corso dal piano di studio. 
+- `LoginForm` (in `components/LoginForm.jsx`): componente che gestisce il form per il login e chiama l'api associata al submit.
+- `ConfirmationModal` (in `components/ConfirmationModal.jsx`): componente che mostra un modal per richiedere la conferma all'utente in caso di SAVE o DELETE di un piano studio. 
 
+### **Views**
+- `StudyPlan` (in `views/StudyPlan.jsx`): componente che mostra il piano studio di un utente e che gestisce la creazione e l'eliminazione dello stesso.
 
+- `EditPlan` (in `views/EditPlan.jsx`): componente che mostra la pagina di editing, con lista dei corsi attualmente presenti nel proprio piano studio (che possono essere rimossi) e i corsi che eventualmente si possono ancora selezionare. Inoltre esegue controlli (lato client) sui vincoli da rispettare, disabilitando i corsi che non li rispettano. 
 
 
 ## Screenshot
 
-![Screenshot](./img/screenshot.jpg)
+![Screenshot](./img/screenshot.png)
 
 ## Users Credentials
 
-| email               | password | name     |
-| --------------------| -------- | -------- |
-| user1@polito.com    | password | User1    |
-| user2@polito.com    | password | User2    |
-| user3@polito.com    | password | User3    |
-| user4@polito.com    | password | User4    |
-| user5@polito.com    | password | User5    |
+| email               | password | name     | Type of Study Plan|
+| --------------------| -------- | -------- |-----|
+| user1@polito.com    | password | User1    |Part-time|
+| user2@polito.com    | password | User2    |Full-time|
+| user3@polito.com    | password | User3    |Part-time|
+| user4@polito.com    | password | User4    ||
+| user5@polito.com    | password | User5    ||

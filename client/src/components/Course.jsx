@@ -9,7 +9,7 @@ const Course = (props) => {
     if (props.course.length === 0 && !props.removeList)
         return (
             <Row className="flex-fill ">
-                <h4 className="mt-3 mb-3  " > Ancora nessun corso presente nel piano di studio</h4>
+                <h4 className="mt-3 mb-3  " > Ancora nessun corso</h4>
             </Row>
         );
     else

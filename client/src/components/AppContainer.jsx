@@ -1,5 +1,6 @@
-import { Container, Row, Col } from "react-bootstrap";
+// wrapper per il layaout della pagina
 
+import { Container, Row, Col } from "react-bootstrap";
 
 import Navbar from './Navbar';
 import Footer from "./Footer";

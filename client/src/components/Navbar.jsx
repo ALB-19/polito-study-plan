@@ -22,7 +22,6 @@ const Navbar = ({ setCourse }) => {
         api.logout()
             .then(() => {
                 setDirty(true)
-                // setSession({ user: undefined, loggedIn: false });
                 setCourse([]);
                 navigate('/', { replace: true });
             })

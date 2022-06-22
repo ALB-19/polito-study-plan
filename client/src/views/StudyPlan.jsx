@@ -21,7 +21,6 @@ const StudyPlan = (props) => {
     const notify = useNotification();
 
     useEffect(() => {
-        //api per prendere i tipi 
         api.getType()
             .then((types) => {
                 setTypes(types);

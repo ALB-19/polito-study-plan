@@ -18,13 +18,13 @@ const EditPlan = (props) => {
     const [credits, setCredits] = useState(session.plan ? session.plan.Crediti : null);
 
     const addIntoStudyPlan = (course) => {
-        // Propedeuticità
+        //check Propedeuticità
         if (course.Propedeuticità.Code && !planCourses.includes(course.Propedeuticità.Code))
             notify.error(`Problema di propedeuticità con ${course.Propedeuticità.Code} ${course.Propedeuticità.Name}`)
-        // Incompatibilità
+        // check Incompatibilità
         else if (course.incompatibilita && course.incompatibilita.find(incompCourse => planCourses.includes(incompCourse.Code)))
             notify.error(`Problema di incompatibilità. Controlla piano di studio`)
-        // Limite massimo di studenti
+        // check Limite massimo di studenti
         else if (course.Max_Studenti && course.Iscritti >= course.Max_Studenti)
             notify.error(`Numero massimo di iscritti già raggiunto.`)
         else {
@@ -36,12 +36,13 @@ const EditPlan = (props) => {
     const removeFromStudyPlan = (course) => {
         const propCourse = props.course.find(c => c.Propedeuticità && c.Propedeuticità.Code === course.Code);
         if (propCourse && planCourses.includes(propCourse.Code)) {
-            setPlanCourses((old) => old.filter(c => c !== propCourse.Code));
-            setCredits((old) => old - propCourse.CFU)
-            notify.success(`Rimosso anche ${propCourse.Nome} per questioni di propedeuticità`);
+            notify.error(`Il corso non può essere rimosso in quanto propedeutico per  ${propCourse.Nome} `);
         }
-        setPlanCourses((old) => old.filter(c => c !== course.Code));
-        setCredits((old) => old - course.CFU)
+        else{
+
+            setPlanCourses((old) => old.filter(c => c !== course.Code));
+            setCredits((old) => old - course.CFU)
+        }
 
 
     }
@@ -69,10 +70,10 @@ const EditPlan = (props) => {
                     navigate('/studyPlan', { replace: true })
                 })
                 .catch((error) => {
-                    notify.error(error.message);
+                    notify.error(error);
                 })
         }
-        else { //uso planCourse perchè è la lista di corsi aggiornata che poi inserirò in db 
+        else { 
             api.createStudyPlan(planCourses, session.plan.type.ID, credits)
                 .then(() => {
                     notify.success('Piano di studio salvato correttamente!');
@@ -80,7 +81,7 @@ const EditPlan = (props) => {
                     navigate('/studyPlan', { replace: true })
                 })
                 .catch((error) => {
-                    notify.error(error.message);
+                    notify.error(error);
                 })
         }
 

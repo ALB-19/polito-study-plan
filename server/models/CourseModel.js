@@ -14,7 +14,18 @@ module.exports = {
                     const query1 = "SELECT C.Code, C1.Nome, I.Incomp_Code FROM COURSE as C LEFT JOIN INCOMPATIBILITY as I , COURSE as C1 ON C.Code = I.Course_Code and C1.Code=I.Incomp_Code "
                     db.all(query1, [], (err, rows) => {
                         if (err) reject({ message: err.message, status: 500 });
-                        else if (rows.length === 0) reject({ message: "Non sono state trovate incompatibilità", status: 404 });
+                        else if (rows.length === 0) resolve(courses.map(course => ({
+                            Code: course.Code,
+                            Nome: course.Nome,
+                            CFU: course.CFU,
+                            Max_Studenti: course.Max_Studenti,
+                            Propedeuticità: {
+                                Code: course.Prop_code,
+                                Name: course.Prop_name
+                            },
+                            Iscritti: course.Iscritti
+                        }))
+                        )
                         else {
 
                             const incompatibilita = rows.map(course => ({

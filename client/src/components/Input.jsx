@@ -1,3 +1,5 @@
+//componente che gestisce i campi di input dei form
+
 import { Form } from 'react-bootstrap';
 import { Field, ErrorMessage, useField } from 'formik';
 
@@ -5,7 +7,7 @@ import classNames from 'classnames';
 
 
 const Input = ({ id, name, type, placeholder, ...props }) => {
-    const [field, meta] = useField(name);
+    const [field, meta] = useField(name); 
 
     const fieldClass = classNames({
         'form-control': type === 'text' || type === 'email' || type === 'password',
